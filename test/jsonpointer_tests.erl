@@ -21,7 +21,7 @@ simple_test() ->
     ?assertEqual(3, jsonpointer:get(Json, <<"/d/e/0/a">>)),
     ?assertEqual(4, jsonpointer:get(Json, <<"/d/e/1/b">>)),
     ?assertEqual(5, jsonpointer:get(Json, <<"/d/e/2/c">>)),
- 
+
     ?assertEqual(1, jsonpointer:get(Json, "/a")),
     ?assertEqual(2, jsonpointer:get(Json, "/b/c")),
     ?assertEqual(3, jsonpointer:get(Json, "/d/e/0/a")),
