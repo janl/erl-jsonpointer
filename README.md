@@ -26,11 +26,11 @@ This is an implementation of [JSON Pointer](http://tools.ietf.org/html/draft-pbr
 
 ## Building
 
-rebar compile
+    $ rebar compile
 
 ## Testing
 
-rebar eunit
+    $ rebar eunit
 
 ## License
 
