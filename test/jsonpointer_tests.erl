@@ -25,12 +25,12 @@ simple_test() ->
         {"/d/e/1/b", 4},
         {"/d/e/2/c", 5}
     ],
-    
+
     DoAsserts = fun({Path, Val}) ->
         ?assertEqual(jsonpointer:get(Path, Json), Val),
         ?assertEqual(jsonpointer:get(list_to_binary(Path), Json), Val)
     end,
-    
+
     lists:foreach(DoAsserts, Cases),
 
     ?assertThrow({error, missing_path}, jsonpointer:get("/f", Json)),
