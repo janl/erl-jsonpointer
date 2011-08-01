@@ -9,35 +9,35 @@ simple_test() ->
         ]}},
         {<<"d">>, {[
             {<<"e">>, [
-                {<<"a">>, 3},
-                {<<"b">>, 4},
-                {<<"c">>, 5}
+                {[{<<"a">>, 3}]},
+                {[{<<"b">>, 4}]},
+                {[{<<"c">>, 5}]}
             ]}
-        ]}}
+        ]}},
+        {<<"e">>, [3, 4]}
     ]},
 
-    ?assertEqual(Json, jsonpointer:get(Json, <<"/">>)),
-    ?assertEqual(1, jsonpointer:get(Json, <<"/a">>)),
-    ?assertEqual(2, jsonpointer:get(Json, <<"/b/c">>)),
-    ?assertEqual(3, jsonpointer:get(Json, <<"/d/e/0/a">>)),
-    ?assertEqual(4, jsonpointer:get(Json, <<"/d/e/1/b">>)),
-    ?assertEqual(5, jsonpointer:get(Json, <<"/d/e/2/c">>)),
+    Cases = [
+        {"/", Json},
+        {"/a", 1},
+        {"/b/c", 2},
+        {"/d/e/0/a", 3},
+        {"/d/e/1/b", 4},
+        {"/d/e/2/c", 5}
+    ],
+    
+    DoAsserts = fun({Path, Val}) ->
+        ?assertEqual(jsonpointer:get(Path, Json), Val),
+        ?assertEqual(jsonpointer:get(list_to_binary(Path), Json), Val)
+    end,
+    
+    lists:foreach(DoAsserts, Cases),
 
-    ?assertEqual(Json, jsonpointer:get(Json, "/")),
-    ?assertEqual(1, jsonpointer:get(Json, "/a")),
-    ?assertEqual(2, jsonpointer:get(Json, "/b/c")),
-    ?assertEqual(3, jsonpointer:get(Json, "/d/e/0/a")),
-    ?assertEqual(4, jsonpointer:get(Json, "/d/e/1/b")),
-    ?assertEqual(5, jsonpointer:get(Json, "/d/e/2/c")),
-
-    ?assertThrow({error, "Pointer not found"}, jsonpointer:get(Json, "/e")),
-    ?assertThrow({error, "List index > list length"},
-        jsonpointer:get(Json, "/d/e/4/c")),
+    ?assertThrow({error, missing_path}, jsonpointer:get("/f", Json)),
+    ?assertThrow({error, invalid_array_index}, jsonpointer:get("/e/3", Json)),
     ok.
 
 complex_keys_test() ->
-    Json = {[
-        {<<"a/b">>, 1}
-    ]},
-    ?assertEqual(1, jsonpointer:get(Json, <<"/a%2fb">>)),
+    Json = {[{<<"a/b">>, 1}]},
+    ?assertEqual(1, jsonpointer:get(<<"/a%2fb">>, Json)),
     ok.
